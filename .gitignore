@@ -1,0 +1,6 @@
+dist/
+vendor/whisper.cpp/
+node_modules/
+.env
+build/*.provisionprofile
+.DS_Store

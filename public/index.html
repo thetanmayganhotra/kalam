@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kalam</title>
+  <link rel="stylesheet" href="fonts.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ───────── top bar (fades away while you write) ───────── -->
+  <header class="top chrome" id="top">
+    <div class="side-l">
+      <button class="icon" id="btnOutline" title="Outline  ⇧⌘O" aria-label="Outline">
+        <svg viewBox="0 0 20 20"><rect x="2.5" y="3.5" width="15" height="13" rx="2.5"/><path d="M7.5 3.5v13"/></svg>
+      </button>
+      <input id="title" class="doc-title" placeholder="Untitled" spellcheck="false" aria-label="Title" />
+      <span id="saved" class="saved"></span>
+    </div>
+    <div class="side-r">
+      <button class="icon" id="btnFind" title="Find  ⌘F" aria-label="Find">
+        <svg viewBox="0 0 20 20"><circle cx="8.5" cy="8.5" r="5"/><path d="m12.5 12.5 4 4"/></svg>
+      </button>
+      <button class="icon" id="btnFocus" title="Focus mode  ⇧⌘F" aria-label="Focus mode">
+        <svg viewBox="0 0 20 20"><path d="M3 7V4.5A1.5 1.5 0 0 1 4.5 3H7M13 3h2.5A1.5 1.5 0 0 1 17 4.5V7M17 13v2.5a1.5 1.5 0 0 1-1.5 1.5H13M7 17H4.5A1.5 1.5 0 0 1 3 15.5V13"/></svg>
+      </button>
+      <button class="icon" id="btnTheme" title="Light / dark  ⇧⌘D" aria-label="Theme">
+        <svg viewBox="0 0 20 20"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7Z"/></svg>
+      </button>
+      <button class="icon" id="btnPdf" title="Export PDF  ⌘P" aria-label="Export PDF">
+        <svg viewBox="0 0 20 20"><path d="M11.5 2.5H6A1.5 1.5 0 0 0 4.5 4v12A1.5 1.5 0 0 0 6 17.5h8a1.5 1.5 0 0 0 1.5-1.5V6.5l-4-4Z"/><path d="M11.5 2.5v4h4M10 9.5v5M7.8 12.3 10 14.5l2.2-2.2"/></svg>
+      </button>
+      <div class="menu-wrap">
+        <button class="icon" id="btnMenu" title="Menu" aria-label="Menu">
+          <svg viewBox="0 0 20 20"><circle cx="4.5" cy="10" r=".9"/><circle cx="10" cy="10" r=".9"/><circle cx="15.5" cy="10" r=".9"/></svg>
+        </button>
+        <div class="menu" id="menu" hidden>
+          <button data-act="new">New<kbd>⌘N</kbd></button>
+          <button data-act="open">Open…<kbd>⌘O</kbd></button>
+          <button data-act="save">Save<kbd>⌘S</kbd></button>
+          <button data-act="saveas">Save as…<kbd>⇧⌘S</kbd></button>
+          <hr />
+          <button data-act="titlepage">Title page…</button>
+          <button data-act="pdf">Export PDF<kbd>⌘P</kbd></button>
+          <hr />
+          <button data-act="typewriter" class="check">Typewriter mode<kbd>⇧⌘T</kbd></button>
+          <button data-act="scenenums" class="check">Scene numbers</button>
+          <button data-act="pagebreaks" class="check">Page breaks</button>
+          <button data-act="ai" class="check">AI understanding</button>
+          <hr />
+          <button data-act="settings">Settings…<kbd>⌘,</kbd></button>
+          <button data-act="help">Shortcuts &amp; voice cues<kbd>⌘/</kbd></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="find" id="findBar" hidden>
+    <input id="findInput" placeholder="Find" spellcheck="false" />
+    <span id="findCount" class="muted"></span>
+    <button class="icon sm" id="findPrev" aria-label="Previous"><svg viewBox="0 0 20 20"><path d="m5 12.5 5-5 5 5"/></svg></button>
+    <button class="icon sm" id="findNext" aria-label="Next"><svg viewBox="0 0 20 20"><path d="m5 7.5 5 5 5-5"/></svg></button>
+    <button class="icon sm" id="findClose" aria-label="Close"><svg viewBox="0 0 20 20"><path d="m5.5 5.5 9 9m0-9-9 9"/></svg></button>
+  </div>
+
+  <!-- ───────── outline ───────── -->
+  <aside class="outline" id="outline">
+    <div class="seg">
+      <button data-tab="scenes" class="on">Scenes</button>
+      <button data-tab="chars">Characters</button>
+    </div>
+    <ol id="sceneList" class="olist"></ol>
+    <ul id="charList" class="olist chars" hidden></ul>
+    <dl class="stats" id="stats"></dl>
+  </aside>
+
+  <!-- ───────── the page ───────── -->
+  <main class="desk" id="desk">
+    <div class="sheet" id="sheet">
+      <div class="title-sheet" id="titleSheet" hidden></div>
+      <article id="page" class="page" contenteditable="true" spellcheck="false" autocorrect="off" autocapitalize="off"
+        data-placeholder="Fade in…"></article>
+      <div class="breaks" id="breaks" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <!-- ───────── status ───────── -->
+  <footer class="status chrome">
+    <button id="elType" class="eltype" title="Element — Tab to change">Action</button>
+    <span id="pageInfo" class="muted"></span>
+  </footer>
+
+  <!-- ───────── voice capsule ───────── -->
+  <div class="voice" id="voice">
+    <button id="mic" class="mic" title="Dictate  ⇧⌘M  ·  hold ⌥ to talk" aria-label="Dictate">
+      <span class="ring" id="meter"></span>
+      <svg viewBox="0 0 20 20"><rect x="7" y="2.5" width="6" height="10" rx="3"/><path d="M4.5 9.5a5.5 5.5 0 0 0 11 0M10 15v2.5"/></svg>
+    </button>
+    <div class="vtext">
+      <span id="micState">Dictate</span>
+      <span id="modePill" class="vmode"></span>
+    </div>
+    <button id="cursorPill" class="vlink" hidden title="Voice is writing at your cursor">Jump to end</button>
+    <button class="icon sm" id="btnLog" title="What I heard" aria-label="Voice log">
+      <svg viewBox="0 0 20 20"><path d="M4 6h12M4 10h12M4 14h7"/></svg>
+    </button>
+    <div class="whomain" id="whoMain" hidden>
+      <span class="whoq">Who is “main”?</span>
+      <span id="whoChips"></span>
+      <form id="whoForm"><input id="whoInput" placeholder="Name" autocomplete="off" spellcheck="false" aria-label="Narrator's name" /></form>
+    </div>
+    <div class="logpop" id="logPop" hidden>
+      <div class="loghead">
+        <span>Heard → written</span>
+        <button id="btnCopyLog" class="textbtn">Copy log</button>
+      </div>
+      <ol id="log" class="log"><li class="empty muted">Nothing yet. Press the mic and talk.</li></ol>
+      <form id="typeForm"><input id="typeBox" placeholder="Type a cue as if you said it — “Priya kehti hai…”" autocomplete="off" /></form>
+    </div>
+  </div>
+
+  <div class="ac" id="ac" hidden></div>
+  <div class="measure" id="measure" aria-hidden="true"></div>
+  <div class="print-doc" id="printDoc"></div>
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- ───────── dialogs ───────── -->
+  <dialog id="help" class="dlg">
+    <h2>Kalam</h2>
+    <p class="lede">Bolo ya likho. It formats like a screenplay as you go.</p>
+    <div class="cols">
+      <section>
+        <h3>Writing</h3>
+        <table>
+          <tr><td><kbd>Tab</kbd></td><td>Change element. Empty line → Character, in dialogue → (Parenthetical)</td></tr>
+          <tr><td><kbd>↵</kbd></td><td>Next paragraph — the right element follows</td></tr>
+          <tr><td><kbd>⇧↵</kbd></td><td>Line break, same element</td></tr>
+          <tr><td><kbd>⌘1–6</kbd></td><td>Scene · Action · Character · Dialogue · Parenthetical · Transition</td></tr>
+          <tr><td><kbd>⌘B</kbd> <kbd>⌘I</kbd> <kbd>⌘U</kbd></td><td>Bold · italic · underline (Fountain)</td></tr>
+          <tr><td><kbd>⌘F</kbd></td><td>Find</td></tr>
+          <tr><td><kbd>⇧⌘O</kbd></td><td>Outline</td></tr>
+          <tr><td><kbd>⇧⌘F</kbd> <kbd>⇧⌘T</kbd></td><td>Focus mode · typewriter mode</td></tr>
+          <tr><td><kbd>⌘P</kbd></td><td>Export PDF</td></tr>
+          <tr><td><kbd>⌘Z</kbd></td><td>Undo (also undoes the last voice edit)</td></tr>
+        </table>
+      </section>
+      <section>
+        <h3>Voice — <kbd>⇧⌘M</kbd> or hold <kbd>⌥</kbd></h3>
+        <table>
+          <tr><td>Scene</td><td>“to scene ye hai…”, “naya scene”, “hum playground mein hain”, “cut to Rahul ka ghar, raat”. INT/EXT is decided for you.</td></tr>
+          <tr><td>Dialogue</td><td>“Rahul bolta hai…”, “Priya kehti hai ki…”, “Maya says…”, or just a known name: “Rahul, haan samajh gaya”</td></tr>
+          <tr><td>Bracket</td><td>“dheere se bolta hai”, “chillata hai”, “bracket mein hanste hue”</td></tr>
+          <tr><td>Action</td><td>“action…”, “scene mein dikhta hai ki…”, or plain narration</td></tr>
+          <tr><td>Transition</td><td>“cut to”, “fade in / out”, “dissolve to”</td></tr>
+          <tr><td>Fix</td><td>“galat ho gaya”, “last line hata do”, “isko aise likho: …”, “Rahul ka naam Rohit kar do”</td></tr>
+        </table>
+      </section>
+    </div>
+    <p class="muted small">Files are plain Fountain (.fountain) — they open in Beat, Highland, Fade In and every screenplay app that reads Fountain.</p>
+    <form method="dialog"><button class="primary">Got it</button></form>
+  </dialog>
+
+  <dialog id="titleDlg" class="dlg narrow">
+    <h2>Title page</h2>
+    <form method="dialog" id="titleForm">
+      <label>Title<input name="title" /></label>
+      <label>Credit<input name="credit" placeholder="Written by" /></label>
+      <label>Author<input name="author" /></label>
+      <label>Source<input name="source" placeholder="Based on…" /></label>
+      <label>Draft date<input name="draft" placeholder="First draft · 13 Nov 2026" /></label>
+      <label>Contact<textarea name="contact" rows="3"></textarea></label>
+      <div class="row-end">
+        <button value="cancel" class="textbtn">Cancel</button>
+        <button value="ok" class="primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="settingsDlg" class="dlg narrow acct">
+    <form method="dialog" class="dlg-x"><button class="icon sm" aria-label="Close" title="Close  esc"><svg viewBox="0 0 20 20"><path d="m5.5 5.5 9 9m0-9-9 9"/></svg></button></form>
+    <h2>Settings</h2>
+    <h3>Language</h3>
+    <p class="langrow">
+      <select id="langSel" aria-label="Dictation language"></select>
+      <span class="muted small">The language you dictate in.</span>
+    </p>
+    <h3>Voice</h3>
+    <div class="seg vseg" role="radiogroup" aria-label="Voice mode">
+      <button type="button" data-mode="online" role="radio">Online · Groq</button>
+      <button type="button" data-mode="offline" role="radio">Offline · this Mac</button>
+    </div>
+    <p class="using" id="voiceUsing"></p>
+
+    <section id="panelOnline">
+      <p class="lede">Best for Hinglish, and AI shapes your script. You need a free Groq key, which takes 2 minutes:</p>
+      <ol class="steps">
+        <li>Open <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> and sign in with Google. It's free, no card needed.</li>
+        <li>Click <b>Create API Key</b>, name it <b>Kalam</b>, press <b>Submit</b>.</li>
+        <li>Copy the key (it starts with <code>gsk_</code>) and paste it below. Groq shows it only once.</li>
+      </ol>
+      <p class="state" id="keyState"></p>
+      <form id="keyForm" class="keyrow">
+        <input id="keyInput" type="password" autocomplete="off" spellcheck="false" placeholder="gsk_…" aria-label="Groq API key" />
+        <button class="primary" id="keySave">Save</button>
+      </form>
+      <p class="msg" id="keyMsg"></p>
+      <button class="textbtn" id="keyRemove" hidden>Remove key from this Mac</button>
+      <p class="muted small">The free plan is plenty for writing. If you dictate non-stop, the AI is sometimes busy for a few seconds, and Kalam keeps writing with its keyword engine.</p>
+    </section>
+
+    <section id="panelOffline" hidden>
+      <p class="lede">Works without internet, and your voice never leaves this Mac. It's a one-time download of <span id="offSize">574 MB</span>. It's a little slower and less accurate than online, and the keyword engine (not AI) shapes the script.</p>
+      <div id="offTools">
+        <p class="state" id="offState"></p>
+        <div class="bar" id="offBar" hidden><span id="offFill"></span></div>
+        <p class="row-start">
+          <button class="primary" id="offDownload">Download offline voice</button>
+          <button class="textbtn" id="offCancel" hidden>Cancel</button>
+          <button class="textbtn" id="offRemove" hidden>Remove download</button>
+        </p>
+      </div>
+    </section>
+
+    <form method="dialog"><button class="textbtn">Done</button></form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+  <script type="module" src="account.js"></script>
+</body>
+</html>

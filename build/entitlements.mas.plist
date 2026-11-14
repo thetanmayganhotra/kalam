@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- Mac App Store: the app runs in Apple's sandbox -->
+  <key>com.apple.security.app-sandbox</key><true/>
+  <!-- Electron needs an app group named TEAMID.appId. Replace TEAMID with your 10-character Apple Team ID. -->
+  <key>com.apple.security.application-groups</key>
+  <array><string>TEAMID.com.tanmayganhotra.kalam</string></array>
+  <!-- Dictation -->
+  <key>com.apple.security.device.audio-input</key><true/>
+  <!-- Groq, the offline-model download, and Kalam's own local server on 127.0.0.1 -->
+  <key>com.apple.security.network.client</key><true/>
+  <key>com.apple.security.network.server</key><true/>
+  <!-- Open… / Save… / Export PDF -->
+  <key>com.apple.security.files.user-selected.read-write</key><true/>
+</dict>
+</plist>

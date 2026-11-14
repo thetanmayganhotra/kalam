@@ -1,0 +1,84 @@
+{
+  "name": "kalam",
+  "productName": "Kalam",
+  "version": "0.1.0",
+  "description": "Voice-first screenplay writer. Bolo, likha jayega. Saves .fountain (opens in Beat).",
+  "type": "module",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "web": "node server.js",
+    "test": "node --test test/*.test.js",
+    "dist": "electron-builder --mac dmg --universal -c.mac.identity=null -c.mac.notarize=false",
+    "dist:signed": "electron-builder --mac dmg zip --universal --publish never",
+    "icon": "cd build && qlmanage -t -s 1024 -o . icon.svg && mv icon.svg.png icon.png",
+    "whisper": "./scripts/build-whisper.sh",
+    "predist": "test -x vendor/whisper/bin/whisper-server || ./scripts/build-whisper.sh",
+    "predist:signed": "test -x vendor/whisper/bin/whisper-server || ./scripts/build-whisper.sh",
+    "dist:mas": "electron-builder --mac mas --universal --publish never",
+    "predist:mas": "test -x vendor/whisper/bin/whisper-server || ./scripts/build-whisper.sh"
+  },
+  "author": "tanmayganhotra",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "33.4.11",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.tanmayganhotra.kalam",
+    "productName": "Kalam",
+    "copyright": "© 2026 Tanmay Ganhotra",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.cjs",
+      "server.js",
+      "lib/**",
+      "public/**",
+      "package.json",
+      "!**/.env",
+      "!**/*.map"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.png",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": true,
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Kalam listens while you dictate so it can write your screenplay. With online voice the audio goes to Groq to be transcribed; with offline voice it never leaves this Mac.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "dmg": {
+      "title": "Kalam ${version}",
+      "artifactName": "Kalam-${version}.dmg"
+    },
+    "extraResources": [
+      {
+        "from": "vendor/whisper/bin",
+        "to": "whisper",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "mas": {
+      "type": "distribution",
+      "hardenedRuntime": false,
+      "entitlements": "build/entitlements.mas.plist",
+      "entitlementsInherit": "build/entitlements.mas.inherit.plist",
+      "provisioningProfile": "build/embedded.provisionprofile",
+      "extendInfo": {
+        "ElectronTeamID": "TEAMID",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- macOS squircle-ish tile, paper colour, sindoor nib -->
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="#f6f2ea"/>
+  <g transform="rotate(45 512 512)">
+    <!-- nib: shoulders, tapering to a point -->
+    <path d="M512 230 C590 230 630 300 630 380 L630 470 C630 560 560 690 512 800 C464 690 394 560 394 470 L394 380 C394 300 434 230 512 230 Z" fill="#c0532d"/>
+    <!-- slit + breather hole -->
+    <path d="M512 520 L512 740" stroke="#f6f2ea" stroke-width="16" stroke-linecap="round"/>
+    <circle cx="512" cy="500" r="30" fill="#f6f2ea"/>
+  </g>
+</svg>
